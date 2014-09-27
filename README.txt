@@ -23,3 +23,7 @@ You may need to create the libraries subfolder if its your first library. Restar
 
 We also have a great tutorial on Arduino library installation at:
 http://learn.adafruit.com/adafruit-all-about-arduino-libraries-install-use
+
+Using an ATtiny? You'll need the TinyWireM library:
+https://github.com/adafruit/TinyWireM/archive/master.zip
+

@@ -13,9 +13,20 @@ products from Adafruit!
 
 Written by Limor Fried/Ladyada for Adafruit Industries.  
 BSD license, all text above must be included in any redistribution
+
+Modded by Jayson Owens/ja450n to include TinyWire support for ATtiny Boards
+
+Use TinyWireM.h for ATtiny's, otherwise stick with Wire.h
+
+IMPORTANT - If using ATtiny you won't be able to use the 
+hardware Serial functions, so you'll need to comment out or remove
+the Serial.x calls in the example code below
+
 **********************************************************/
 
 #include <Wire.h>
+// #include <TinyWireM.h>
+
 #include "Adafruit_MPR121.h"
 
 // You can have up to 4 on one i2c bus but one is enough for testing!

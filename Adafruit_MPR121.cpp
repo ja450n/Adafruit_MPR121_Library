@@ -12,16 +12,24 @@
 
   Written by Limor Fried/Ladyada for Adafruit Industries.  
   BSD license, all text above must be included in any redistribution
+  
+  Modded by Jayson Owens/ja450n to include TinyWire support for ATtiny Boards
+  
  ****************************************************/
 
 #include "Adafruit_MPR121.h"
-
+	
 Adafruit_MPR121::Adafruit_MPR121() {
 }
 
 boolean Adafruit_MPR121::begin(uint8_t i2caddr) {
-  Wire.begin();
-    
+  
+  #if defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
+  	TinyWireM.begin();
+	#else
+		Wire.begin();
+	#endif
+	    
   _i2caddr = i2caddr;
 
   // soft reset
@@ -98,20 +106,38 @@ uint16_t  Adafruit_MPR121::touched(void) {
 
 
 uint8_t Adafruit_MPR121::readRegister8(uint8_t reg) {
-    Wire.beginTransmission(_i2caddr);
-    Wire.write(reg);
-    Wire.endTransmission(false);
-    Wire.requestFrom(_i2caddr, 1);
-    return ( Wire.read());
+  	#if defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
+  		TinyWireM.beginTransmission(_i2caddr);
+	    TinyWireM.write(reg);
+	    TinyWireM.endTransmission(false);
+	    TinyWireM.requestFrom(_i2caddr, 1);
+	    return ( TinyWireM.read());
+		#else
+			Wire.beginTransmission(_i2caddr);
+	    Wire.write(reg);
+	    Wire.endTransmission(false);
+	    Wire.requestFrom(_i2caddr, 1);
+	    return ( Wire.read());
+		#endif
+		
 }
 
 uint16_t Adafruit_MPR121::readRegister16(uint8_t reg) {
-    Wire.beginTransmission(_i2caddr);
-    Wire.write(reg);
-    Wire.endTransmission(false);
-    Wire.requestFrom(_i2caddr, 2);
-    uint16_t v = Wire.read();
-    v |=  ((uint16_t) Wire.read()) << 8;
+	  #if defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
+  		TinyWireM.beginTransmission(_i2caddr);
+	    TinyWireM.write(reg);
+	    TinyWireM.endTransmission(false);
+	    TinyWireM.requestFrom(_i2caddr, 2);
+	    uint16_t v = TinyWireM.read();
+	    v |=  ((uint16_t) TinyWireM.read()) << 8;
+		#else
+			Wire.beginTransmission(_i2caddr);
+	    Wire.write(reg);
+	    Wire.endTransmission(false);
+	    Wire.requestFrom(_i2caddr, 2);
+	    uint16_t v = Wire.read();
+	    v |=  ((uint16_t) Wire.read()) << 8;
+		#endif
     return v;
 }
 
@@ -120,9 +146,16 @@ uint16_t Adafruit_MPR121::readRegister16(uint8_t reg) {
     @brief  Writes 8-bits to the specified destination register
 */
 /**************************************************************************/
-void Adafruit_MPR121::writeRegister(uint8_t reg, uint8_t value) {
-    Wire.beginTransmission(_i2caddr);
-    Wire.write((uint8_t)reg);
-    Wire.write((uint8_t)(value));
-    Wire.endTransmission();
+void Adafruit_MPR121::writeRegister(uint8_t reg, uint8_t value) {	
+		#if defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
+  	  TinyWireM.beginTransmission(_i2caddr);
+    	TinyWireM.write((uint8_t)reg);
+    	TinyWireM.write((uint8_t)(value));
+    	TinyWireM.endTransmission();	
+		#else
+    	Wire.beginTransmission(_i2caddr);
+    	Wire.write((uint8_t)reg);
+    	Wire.write((uint8_t)(value));
+    	Wire.endTransmission();		
+		#endif
 }
